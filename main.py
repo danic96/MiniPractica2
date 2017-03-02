@@ -57,8 +57,13 @@ if __name__ == "__main__":
         try:
             api_key = sys.argv[1]
         except IndexError:
+            key_file = open('api_key', 'r')
+            api_key = key_file.read()
             print "API Key must be in CLI option"
 
+    print api_key
+    """
     wc = WeatherClient(api_key)
     result = wc.almanac("Lleida")
     print result
+    """
