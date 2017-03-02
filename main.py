@@ -13,23 +13,36 @@ class WeatherClient(object):
     """docstring foe WeatherClient."""
 
     url_base = "http://api.wunderground.com/api/"
+    web_type = ".json"
     url_service = {
         "almanac": "/almanac/q/CA/",
         "hourly": "/hourly/q/CA/"
     }
+
     def __init__(self, api_key):
+        """Inicialitzar la clau."""
         super(WeatherClient, self).__init__()
         self.api_key = api_key
 
+    def requestData(self, location, url_service_name):
+        """Baixar-se la web."""
+        url = self.url_base + self.api_key + \
+            self.url_service[url_service_name] + \
+            location + self.web_type
+        print url
+        return requests.get(url).text
+
+    def hourly(self, location):
+        data = self.requestData(location, "hourly")
+        jsondata = json.loads(data)
+
+        return jsondata
+
     def almanac(self, location):
         # baixar-se la web
-        url = self.url_base + self.api_key + self.url_service["almanac"] + \
-            location + ".json"
-        print url
-        data = requests.get(url).text
+        data = self.requestData(location, "almanac")
 
         # llegir-la
-        # soup = bs(data, 'lxml')
         jsondata = json.loads(data)
         almanac = jsondata["almanac"]
 
