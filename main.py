@@ -34,10 +34,16 @@ class WeatherClient(object):
 
     def hourly(self, location):
         data = self.requestData(location, "hourly")
-        # jsondata = json.loads(data)["hourly_forecast"][0]["FCTTIME"]["pretty"]
+
         jsondata = json.loads(data)["hourly_forecast"]
         for date in jsondata:
             print date["FCTTIME"]["pretty"]
+            print "  Temperature-> " + date["temp"]["metric"] + " ºC".decode("utf-8")
+            print "  Condition-> " + date["condition"]
+            print "  Windspeed-> " + date["wspd"]["metric"] + " Km/h"
+            print "  Humidity-> " + date["humidity"] + " %"
+            print "  Pressure-> " + date["mslp"]["metric"] + " hPa"
+            break
 
         return jsondata
 
@@ -76,4 +82,4 @@ if __name__ == "__main__":
     # result1 = wc.almanac("Lleida")
     result2 = wc.hourly("Lleida")
     # print result1
-    print result2
+    # print result2
