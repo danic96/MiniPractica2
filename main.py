@@ -29,7 +29,7 @@ class WeatherClient(object):
         url = self.url_base + self.api_key + \
             self.url_service[url_service_name] + \
             location + self.web_type
-        print url
+
         return requests.get(url).text
 
     def hourly(self, location):
@@ -38,17 +38,17 @@ class WeatherClient(object):
         jsondata = json.loads(data)["hourly_forecast"]
         for date in jsondata:
             print date["FCTTIME"]["pretty"]
-            print "  Temperature-> " + date["temp"]["metric"] + " ºC".decode("utf-8")
+            print "  Temperature-> " + date["temp"]["metric"] + \
+                " ºC".decode("utf-8")
             print "  Condition-> " + date["condition"]
             print "  Windspeed-> " + date["wspd"]["metric"] + " Km/h"
             print "  Humidity-> " + date["humidity"] + " %"
             print "  Pressure-> " + date["mslp"]["metric"] + " hPa"
-            break
 
         return jsondata
 
     def almanac(self, location):
-        # baixar-se la web
+        """Baixar-se la informació de 'almanac'."""
         data = self.requestData(location, "almanac")
 
         # llegir-la
