@@ -16,7 +16,8 @@ class WeatherClient(object):
     web_type = ".json"
     url_service = {
         "almanac": "/almanac/q/CA/",
-        "hourly": "/hourly/q/CA/"
+        "hourly": "/hourly/q/CA/",
+        "astronomy": "/astronomy/q/CA/"
     }
 
     def __init__(self, api_key):
@@ -32,29 +33,47 @@ class WeatherClient(object):
 
         return requests.get(url).text
 
+    def astronomy(self, location):
+        u"""Baixar-se la informació de astronomy."""
+        data = self.requestData(location, "astronomy")
+
+        jsondata = json.loads(data)["moon_phase"]
+        print jsondata
+
+        return jsondata
+
     def hourly(self, location):
+        u"""Baixar-se la informació de hourly."""
         data = self.requestData(location, "hourly")
 
         jsondata = json.loads(data)["hourly_forecast"]
+        print jsondata[0]["temp"]["metric"]
+        resultat = []
         for date in jsondata:
-            print date["FCTTIME"]["pretty"]
+            """print date["FCTTIME"]["pretty"]
             print "  Temperature-> " + date["temp"]["metric"] + \
                 " ºC".decode("utf-8")
             print "  Condition-> " + date["condition"]
             print "  Windspeed-> " + date["wspd"]["metric"] + " Km/h"
             print "  Humidity-> " + date["humidity"] + " %"
-            print "  Pressure-> " + date["mslp"]["metric"] + " hPa"
+            print "  Pressure-> " + date["mslp"]["metric"] + " hPa""""
+            resultat.append(date["FCTTIME"]["pretty"])
+            resultat.append("  Temperature-> " + date["temp"]["metric"] +
+                            " ºC".decode("utf-8"))
+            resultat.append("  Condition-> " + date["condition"])
+            resultat.append("  Windspeed-> " + date["wspd"]["metric"] + " Km/h")
+            resultat.append("  Humidity-> " + date["humidity"] + " %")
+            resultat.append("  Pressure-> " + date["mslp"]["metric"] + " hPa")
 
-        return jsondata
+        return resultat
 
     def almanac(self, location):
-        """Baixar-se la informació de 'almanac'."""
+        u"""Baixar-se la informació de 'almanac'."""
         data = self.requestData(location, "almanac")
 
         # llegir-la
         jsondata = json.loads(data)
         almanac = jsondata["almanac"]
-
         resultats = {}
         resultats["maximes"] = {}
         resultats["minimes"] = {}
@@ -80,6 +99,5 @@ if __name__ == "__main__":
 
     wc = WeatherClient(api_key)
     # result1 = wc.almanac("Lleida")
-    result2 = wc.hourly("Lleida")
-    # print result1
-    # print result2
+    # result2 = wc.hourly("Lleida")
+    result3 = wc.astronomy("Lleida")
