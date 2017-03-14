@@ -33,35 +33,20 @@ class WeatherClient(object):
 
         return requests.get(url).text
 
-    def astronomy(self, location):
-        u"""Baixar-se la informació de astronomy."""
-        data = self.requestData(location, "astronomy")
-
-        jsondata = json.loads(data)["moon_phase"]
-        print jsondata
-
-        return jsondata
-
     def hourly(self, location):
         u"""Baixar-se la informació de hourly."""
         data = self.requestData(location, "hourly")
 
         jsondata = json.loads(data)["hourly_forecast"]
-        print jsondata[0]["temp"]["metric"]
         resultat = []
         for date in jsondata:
-            """print date["FCTTIME"]["pretty"]
-            print "  Temperature-> " + date["temp"]["metric"] + \
-                " ºC".decode("utf-8")
-            print "  Condition-> " + date["condition"]
-            print "  Windspeed-> " + date["wspd"]["metric"] + " Km/h"
-            print "  Humidity-> " + date["humidity"] + " %"
-            print "  Pressure-> " + date["mslp"]["metric"] + " hPa""""
+
             resultat.append(date["FCTTIME"]["pretty"])
             resultat.append("  Temperature-> " + date["temp"]["metric"] +
                             " ºC".decode("utf-8"))
             resultat.append("  Condition-> " + date["condition"])
-            resultat.append("  Windspeed-> " + date["wspd"]["metric"] + " Km/h")
+            resultat.append("  Windspeed-> " + date["wspd"]["metric"] +
+                            " Km/h")
             resultat.append("  Humidity-> " + date["humidity"] + " %")
             resultat.append("  Pressure-> " + date["mslp"]["metric"] + " hPa")
 
@@ -93,11 +78,9 @@ if __name__ == "__main__":
         except IndexError:
             key_file = open('api_key', 'r')
             api_key = key_file.read().replace('\n', '')
-            print "Must provide api key in code or cmdline arg"
-
-    print api_key
 
     wc = WeatherClient(api_key)
-    # result1 = wc.almanac("Lleida")
-    # result2 = wc.hourly("Lleida")
-    result3 = wc.astronomy("Lleida")
+
+    result = wc.hourly("Lleida")
+    for linea in result:
+        print linea
